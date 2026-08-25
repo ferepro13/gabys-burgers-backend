@@ -6,7 +6,7 @@ CREATE TABLE productos (
   uuid CHAR(36) PRIMARY KEY DEFAULT (UUID()),
   name VARCHAR(100) NOT NULL,
   description TEXT,
-  -- category VARCHAR(100) NOT NULL,
+  category VARCHAR(100) NOT NULL DEFAULT 'Otros',
   imageUrl VARCHAR(255) NULL,
   price DECIMAL(10,2) NOT NULL,
   stock INT NOT NULL DEFAULT 0,

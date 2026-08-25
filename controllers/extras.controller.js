@@ -24,18 +24,22 @@ const createExtra = async (req, res) => {
   try {
     const result = await Extra.create(req.body);
     res.status(201).json({ message: 'Extra creado', id: result.insertId });
+    console.log(result, result.insertId)
   } catch (err) {
     res.status(500).json({ error: err.message });
+    console.log("Error creando extra: ", err.message)
   }
 };
 
 const updateExtra = async (req, res) => {
   try {
+    console.log("Intentando modificar extra con uuid: ", req.params.uuid)
     const result = await Extra.update(req.params.uuid, req.body);
     if (result.affectedRows === 0) return res.status(404).json({ error: 'Extra no encontrado' });
     res.json({ message: 'Extra actualizado' });
   } catch (err) {
     res.status(500).json({ error: err.message });
+    console.log("Error updating extras: ", err.message)
   }
 };
 

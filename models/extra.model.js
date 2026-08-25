@@ -26,6 +26,12 @@ const Extra = {
         values.push(value);
       }
     }
+    if (fields.length === 0) {
+      return {
+        affectedRows: 0
+      };
+    }
+    
     values.push(uuid);
     const sql = `UPDATE extras SET ${fields.join(', ')} WHERE uuid = ?`;
     const [result] = await db.query(sql, values);

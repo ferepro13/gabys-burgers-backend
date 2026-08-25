@@ -13,10 +13,10 @@ const Producto = {
   },
 
   create: async (data) => { // agregar category si aplica y otro , ?
-    const { name, description, price, stock, imageUrl } = data; 
+    const { name, description, category, price, stock, imageUrl } = data; 
     const [result] = await db.query(
-      'INSERT INTO productos (name, description, price, stock, imageUrl) VALUES (?, ?, ?, ?, ?)',
-      [name, description, price, stock, imageUrl]
+      'INSERT INTO productos (name, description, category, price, stock, imageUrl) VALUES (?, ?, ?, ?, ?, ?)',
+      [name, description, category, price, stock, imageUrl]
     );
     return result;
   },

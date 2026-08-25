@@ -46,13 +46,13 @@ const createProducto = async (req, res) => { // agregar category si aplica
       imageUrl = result.secure_url;
     }
 
-    const { name, description, price, stock } = req.body;
+    const { name, description, category, price, stock } = req.body;
     if (!name || price === undefined || stock === undefined) {
       return res.status(400).json({
         error: 'name, price y stock son obligatorios'
       });
     }
-    const result = await Producto.create({name, description, price, stock, imageUrl}); // agregar category si aplica
+    const result = await Producto.create({name, description, category, price, stock, imageUrl}); // agregar category si aplica
 
     res.status(201).json({ message: 'Producto creado', id: result.insertId });
   } catch (err) {
@@ -62,10 +62,11 @@ const createProducto = async (req, res) => { // agregar category si aplica
 
 const updateProducto = async (req, res) => { // agregar category si aplica
   try {
-    const { name, description, price, stock } = req.body;
+    const { name, description, category, price, stock } = req.body;
     const updateData = {};
     if (name !== undefined) updateData.name = name;
     if (description !== undefined) updateData.description = description;
+    if (category !== undefined) updateData.category = category;
     if (price !== undefined) updateData.price = price;
     if (stock !== undefined) updateData.stock = stock;
 
