@@ -11,7 +11,8 @@ const decreaseStock = async (order) => {
   // Descontar productos
   for (const item of productos) {
     const success = await Producto.decreaseStock(item.uuid, item.quantity);
-    if (!success) {
+    console.log(item.name, success)
+    if (item.uuid && !success) {
       return { success: false, message: `Stock insuficiente para el producto ${item.name}` };
     }
   }

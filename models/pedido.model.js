@@ -9,12 +9,12 @@ const Pedido = {
       conditions.push('orderState = ?');
       values.push(filters.orderState);
     }
-    if (filters.fromDate) {
+    if (filters.atDate) {
       conditions.push('atDate >= ?');
-      values.push(filters.fromDate);
+      values.push(filters.atDate);
     }
     if (filters.toDate) {
-      conditions.push('atDate <= ?');
+      conditions.push('toDate <= ?');
       values.push(filters.toDate);
     }
     if (conditions.length) {
@@ -31,12 +31,12 @@ const Pedido = {
   },
 
   create: async (data) => {
-    const { clientName, clientPhone, atDate, toDate, time, direction, orderDetails, orderTotalCost } = data;
+    const { clientName, clientPhone, atDate, toDate, time, direction, orderDetails, orderTotalCost, notes } = data;
     const [result] = await db.query(
       `INSERT INTO pedidos 
-       (clientName, clientPhone, atDate, toDate, time, direction, \`order\`, orderTotalCost) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [clientName, clientPhone, atDate, toDate, time, direction, JSON.stringify(order), orderTotalCost]
+       (clientName, clientPhone, atDate, toDate, time, direction, orderDetails, orderTotalCost, notes) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [clientName, clientPhone, atDate, toDate, time, direction, JSON.stringify(orderDetails), orderTotalCost, notes]
     );
     return result;
   },

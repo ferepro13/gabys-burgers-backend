@@ -36,11 +36,13 @@ CREATE TABLE pedidos (
   toDate DATE NOT NULL,               -- Fecha de entrega
   time TIME NOT NULL,                 -- Hora de entrega
   direction TEXT NOT NULL,            -- Dirección de entrega
-  orderDetails JSON NOT NULL,                -- Detalle del pedido: { productos: [{uuid, name, quantity}], extras: [{uuid, name, quantity}] }
+  orderDetails JSON NOT NULL,                -- Detalle del pedido: { productos: [{uuid, name, quantity, extras: [{uuid, name, quantity}] }] }
   orderTotalCost DECIMAL(10,2) NOT NULL,
   orderState ENUM('pendiente', 'hecho') DEFAULT 'pendiente',
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  notes TEXT NULL -- revisar nombre, agregar a modelo y controller
+  --ALTER TABLE pedidos ADD COLUMN notes TEXT NULL;
 );
 
 -- Índices para consultas rápidas
