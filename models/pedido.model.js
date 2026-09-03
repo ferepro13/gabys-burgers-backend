@@ -49,6 +49,11 @@ const Pedido = {
     return result;
   },
 
+  delete: async (uuid) => {
+    const [result] = await db.query("DELETE FROM pedidos WHERE uuid = ?", [uuid])
+    return result
+  },
+
   // Para métricas: obtener todos los pedidos en un rango de fechas
   findByDateRange: async (startDate, endDate) => {
     const [rows] = await db.query(

@@ -193,4 +193,15 @@ const updatePedidoState = async (req, res) => {
   }
 };
 
-module.exports = { createPedido, getPedidos, updatePedidoState };
+const deletePedido = async (req, res) => {
+  try {
+    const { uuid } = req.params;
+    const result = await Pedido.delete(uuid)
+    if (result.affectedRows === 0) return res.status(404).json({ error: "Pedido no encontrado" });
+    res.json({ message: "Pedido borrado correctamente"});
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+module.exports = { createPedido, getPedidos, updatePedidoState, deletePedido };
