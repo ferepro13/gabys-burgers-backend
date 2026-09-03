@@ -51,9 +51,3 @@ const login = async (req, res) => {
 };
 
 module.exports = { register, login };
-
-/* // Para generar el hash de una contraseña, con la consola de Node
-const bcrypt = require('bcryptjs');
-const hash = bcrypt.hashSync('tu_password', 10);
-console.log(hash);
-*/
