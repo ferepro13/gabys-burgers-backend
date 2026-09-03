@@ -37,17 +37,17 @@ app.get('/', (req, res) => {
     message: '🍔 Gaby\'s Burgers API',
     version: '1.0.0',
     endpoints: {
-      productos: '/api/productos',
-      extras: '/api/extras',
-      pedidos: '/api/pedidos',
-      auth: '/api/auth',
-      metrics: '/api/metrics'
+      productos: '/productos',
+      extras: '/extras',
+      pedidos: '/pedidos',
+      auth: '/auth',
+      metrics: '/metrics'
     }
   });
 });
 
 // Rutas
-app.use('/api', routes);
+app.use('/', routes);
 
 // Manejo de errores global
 app.use(errorHandler);
