@@ -42,7 +42,6 @@ CREATE TABLE pedidos (
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
   notes TEXT NULL -- revisar nombre, agregar a modelo y controller
-  --ALTER TABLE pedidos ADD COLUMN notes TEXT NULL;
 );
 
 -- Índices para consultas rápidas
@@ -56,6 +55,3 @@ CREATE TABLE usuarios (
   passwordHash VARCHAR(255) NOT NULL,
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
--- Insertar un usuario inicial (opcional, puedes hacerlo vía /register)
--- INSERT INTO usuarios (username, passwordHash) VALUES ('admin', '$2a$10$...hash...');
