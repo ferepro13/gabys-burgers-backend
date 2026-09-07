@@ -2,11 +2,6 @@ const mysql = require('mysql2');
 const dotenv = require('dotenv');
 dotenv.config();
 
-console.log('Configuración de base de datos:');
-console.log(`  Host: ${process.env.DB_HOST}`);
-console.log(`  Port: ${process.env.DB_PORT || '3306 (default)'}`);
-console.log(`  User: ${process.env.DB_USER}`);
-console.log(`  Database: ${process.env.DB_NAME}`);
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST,

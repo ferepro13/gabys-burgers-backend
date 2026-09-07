@@ -33,7 +33,6 @@ const createExtra = async (req, res) => {
 
 const updateExtra = async (req, res) => {
   try {
-    console.log("Intentando modificar extra con uuid: ", req.params.uuid)
     const { name, price, isAvailable } = req.body;
     const updateData = {};
     if (name !== undefined) updateData.name = name;
@@ -45,7 +44,6 @@ const updateExtra = async (req, res) => {
     res.json({ message: 'Extra actualizado' });
   } catch (err) {
     res.status(500).json({ error: err.message });
-    console.log("Error updating extras: ", err.message)
   }
 };
 

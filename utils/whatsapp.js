@@ -3,7 +3,7 @@
 // Aquí dejaré un placeholder.
 const sendOrderToWhatsApp = (orderData) => {
   // Implementación si deseas que el backend también envíe el mensaje
-  console.log('Enviando mensaje a WhatsApp con datos:', orderData);
+  //console.log('Enviando mensaje a WhatsApp con datos', orderData);
 };
 
 module.exports = { sendOrderToWhatsApp };
