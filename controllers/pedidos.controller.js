@@ -4,75 +4,9 @@ const { sendOrderToWhatsApp } = require('../utils/whatsapp'); // Opcional
 const Producto = require('../models/producto.model');
 const Extra = require('../models/extra.model');
 
-/*
 const createPedido = async (req, res) => {
   try {
-    const { name:clientName, phone:clientPhone, date:toDate, time, location: direction, items:productos, orderTotal:orderTotalCost, notes } = req.body;
-
-    // Validar que productos y extras sean arrays
-    if (!productos || !Array.isArray(productos) || productos?.length === 0) {
-      return res.status(400).json({ error: 'Debe incluir al menos un producto' });
-    }
-
-    // Calcular total y construir objeto order
-    //let orderTotalCost = 0;
-    const orderDetails = { productos: [], extras: [] };
-
-    let extrasFromProducts = [];
-    
-    productos.forEach(p => {
-      if (!p?.extras?.length) return
-      p?.extras.forEach(extra => {
-        if (!extrasFromProducts.some(({uuid, quantity}) => uuid===extra.id)) {
-          extrasFromProducts.push({uuid:extra.id, quantity:1})
-        }
-        else {
-          extrasFromProducts.map(({uuid,quantity}) => uuid===extra.id ? {uuid,quantity:quantity+1} : {uuid,quantity:quantity+1} )
-        }
-      })
-    })
-
-    // Descontar stock
-    const stockResult = await decreaseStock({ productos });
-    if (!stockResult.success) {
-      console.log(stockResult)
-      return res.status(400).json({ error: stockResult.message });
-    }
-
-    // Crear pedido en BD
-    const atDate = new Date().toISOString().split('T')[0]; // Fecha actual
-    const pedidoData = {
-      clientName,
-      clientPhone,
-      atDate,
-      toDate,
-      time,
-      direction,
-      order: orderDetails, // Puedes rellenar con los nombres y cantidades
-      orderTotalCost,
-      notes
-    };
-
-    // Rellenar orderDetails con nombres y cantidades (para historial)
-    // Aquí deberías obtener los nombres de los productos y extras desde la BD
-    // Pero por ahora usamos lo que venga del frontend (debe incluir name)
-    pedidoData.orderDetails = { productos, extras: extrasFromProducts };
-    await Pedido.create(pedidoData);
-
-    // Enviar mensaje por WhatsApp (opcional)
-    // sendOrderToWhatsApp({ clientName, clientPhone, ... });
-
-    res.status(201).json({ message: 'Pedido creado con éxito' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-    console.log(err.message)
-  }
-};
-*/
-
-const createPedido = async (req, res) => {
-  try {
-    const { name: clientName, phone: clientPhone, date: toDate, time, location: direction, items, notes, orderTotal: orderTotalCost } = req.body;
+    const { name: clientName, phone: clientPhone, date: toDate, time, location: direction, items, notes, orderTotal } = req.body;
 
     // 1. Filtrar items válidos (con productId)
     const validItems = (items || []).filter(item => item.productId && item.productId.trim() !== '');
@@ -89,7 +23,7 @@ const createPedido = async (req, res) => {
     const extraMap = Object.fromEntries(allExtras.map(e => [e.uuid, e]));
 
     // 3. Construir orderDetails y calcular total
-    //let orderTotalCost = 0;
+    let orderTotalCost = 0;
     const orderDetails = {
       productos: [],
       extras: []
@@ -102,16 +36,21 @@ const createPedido = async (req, res) => {
         return res.status(400).json({ error: `Producto ${item.productId} no encontrado` });
       }
 
-      const quantity = Number(item.quantity) || 1;
+      const quantity = (Number.isInteger(item.quantity) && Number(item.quantity) > 0) ? Number(item.quantity) : 1
 
       // Verificar stock
       if (Number(product.stock) < Number(quantity)) {
         return res.status(400).json({ error: `Stock insuficiente para ${product.name}` });
       }
 
+      const extrasTotalPrice = product?.extras?.length ? product.extras.reduce((sum, e) => {
+        const extra = extraMap[e.extraId];
+        return sum + (Number(extra?.price) || 0);
+      }, 0) : 0;
+      
       // Calcular subtotal del producto
-      //const productSubtotal = Number(product.price) * quantity;
-      //orderTotalCost += productSubtotal;
+      const productSubtotal = (Number(product.price) + extrasTotalPrice) * quantity;
+      orderTotalCost += productSubtotal;
 
       // Guardar producto en detalle
       orderDetails.productos.push({
@@ -137,6 +76,12 @@ const createPedido = async (req, res) => {
           price: Number(extra.price)
         });
       }
+    }
+    if (orderTotal !== orderTotalCost) {
+      console.log(`Error al calcular el costo total del pedido:
+          Valor recibido del cliente: ${orderTotal}
+          Valor calculado por el backend: ${orderTotalCost}
+        `)
     }
 
     // 4. Descontar stock (solo productos)
