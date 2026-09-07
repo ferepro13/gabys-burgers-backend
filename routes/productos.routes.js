@@ -11,8 +11,17 @@ const authMiddleware = require('../middlewares/auth.middleware');
 const upload = require('../middlewares/upload.middleware');
 const router = express.Router();
 
+const rateLimit = require('express-rate-limit'); // pnpm add express-rate-limit
+
+const productLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes window where can only take 20 requests for products to load
+  limit: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // Rutas públicas (lectura)
-router.get('/', getProductos);
+router.get('/', productLimiter,getProductos);
 router.get('/:uuid', getProductoById);
 
 // Rutas protegidas (CRUD)
