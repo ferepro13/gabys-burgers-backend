@@ -18,9 +18,15 @@ const Extra = {
     return result;
   },
   update: async (uuid, data) => {
+    const { name, price, isAvailable } = data;
+    const updateData = {}
+    if (name !== undefined) updateData.name = name;
+    if (price !== undefined) updateData.price = price;
+    if (isAvailable !== undefined) updateData.isAvailable = isAvailable;
+
     const fields = [];
     const values = [];
-    for (const [key, value] of Object.entries(data)) {
+    for (const [key, value] of Object.entries(updateData)) {
       if (value !== undefined) {
         fields.push(`${key} = ?`);
         values.push(value);
