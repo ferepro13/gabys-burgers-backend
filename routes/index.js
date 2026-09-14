@@ -12,7 +12,7 @@ router.use('/auth', authRoutes);
 router.use('/productos', productoRoutes);
 router.use('/extras', extraRoutes);
 router.use('/pedidos', pedidoRoutes);
-router.use("/domicilio", domicilioRoutes)
+router.use("/domicilios", domicilioRoutes)
 router.use('/metrics', metricsRoutes);
 
 module.exports = router;
