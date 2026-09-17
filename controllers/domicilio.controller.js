@@ -15,7 +15,7 @@ const getDomicilioById = async (req, res) => {
         const domicilio = await Domicilio.findById(req.params.uuid);
         if (!domicilio) return res.status(404).json({error: "Domicilio no encontrado"});
         res.json(domicilio)
-    } catch (error) {
+    } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };

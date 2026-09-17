@@ -40,7 +40,7 @@ CREATE TABLE pedidos (
   orderTotalCost DECIMAL(10,2) NOT NULL,
   orderState ENUM('pendiente', 'hecho') DEFAULT 'pendiente',
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   notes TEXT NULL -- revisar nombre, agregar a modelo y controller
 );
 
@@ -59,5 +59,5 @@ CREATE TABLE usuarios (
 CREATE TABLE domicilio (
   uuid CHAR(36) PRIMARY KEY DEFAULT (UUID()),
   locationName VARCHAR(50) UNIQUE NOT NULL,
-  price DECIMAL(10,2) NOT NULL,
+  price DECIMAL(10,2) NOT NULL
 )

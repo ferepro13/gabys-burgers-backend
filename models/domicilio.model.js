@@ -2,18 +2,18 @@ const db = require('./db');
 
 const Domicilio = {
     findAll: async () => {
-        const [rows] = db.query("SELECT * FROM domicilio");
+        const [rows] = await db.query("SELECT * FROM domicilio");
         return rows;
     },
 
     findById: async (uuid) => {
-        const [rows] = db.query("SELECT * FROM domicilio WHERE uuid = ?", [uuid]);
+        const [rows] = await db.query("SELECT * FROM domicilio WHERE uuid = ?", [uuid]);
         return rows[0];
     },
 
     create: async (data) => {
         const {locationName, price} = data;
-        const [result] = db.query(`INSERT INTO domicilio (locationName, price) VALUES (?, ?)`,
+        const [result] = await db.query(`INSERT INTO domicilio (locationName, price) VALUES (?, ?)`,
             [locationName, price]
         );
         return result
@@ -40,12 +40,13 @@ const Domicilio = {
         }
         
         values.push(uuid);
-        const sql = `UPDATE extras SET ${fields.join(', ')} WHERE uuid = ?`;
+        const sql = `UPDATE domicilio SET ${fields.join(', ')} WHERE uuid = ?`;
         const [result] = await db.query(sql, values);
         return result;
     },
     delete: async (uuid) => {
-        const [result] = db.query("DELETE FROM domicilio WHERE uuid = ?", [uuid])
+        const [result] = await db.query("DELETE FROM domicilio WHERE uuid = ?", [uuid]);
+        return result
     }
 };
 
