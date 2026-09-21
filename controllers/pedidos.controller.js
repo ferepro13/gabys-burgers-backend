@@ -3,10 +3,11 @@ const { decreaseStock } = require('../services/stock.service');
 const { sendOrderToWhatsApp } = require('../utils/whatsapp'); // Opcional
 const Producto = require('../models/producto.model');
 const Extra = require('../models/extra.model');
+const Domicilio = require("../models/domicilio.model")
 
 const createPedido = async (req, res) => {
   try {
-    const { name: clientName, phone: clientPhone, date: toDate, time, location: direction, items, notes, orderTotal } = req.body;
+    const { name: clientName, phone: clientPhone, date: toDate, time, location: direction, items, notes, delivery, orderTotal } = req.body;
 
     // 1. Filtrar items válidos (con productId)
     const validItems = (items || []).filter(item => item.productId && item.productId.trim() !== '');
@@ -14,13 +15,16 @@ const createPedido = async (req, res) => {
       return res.status(400).json({ error: 'Debe incluir al menos un producto' });
     }
 
-    // 2. Obtener todos los productos y extras de la BD (para nombres y precios)
-    const allProducts = await Producto.findAll(); // asumiendo que existe el modelo
-    const allExtras = await Extra.findAll();     // asumiendo que existe el modelo
+    // 2. Obtener todos los productos, extras y domicilios de la BD (para nombres y precios)
+    const allProducts = await Producto.findAll();
+    const allExtras = await Extra.findAll();     
+    const allDeliveries = await Domicilio.findAll();
 
     // Crear mapas para búsqueda rápida
     const productMap = Object.fromEntries(allProducts.map(p => [p.uuid, p]));
     const extraMap = Object.fromEntries(allExtras.map(e => [e.uuid, e]));
+
+    const deliveryData = allDeliveries.find(d => d.uuid === delivery);
 
     // 3. Construir orderDetails y calcular total
     let orderTotalCost = 0;
@@ -43,13 +47,13 @@ const createPedido = async (req, res) => {
         return res.status(400).json({ error: `Stock insuficiente para ${product.name}` });
       }
 
-      const extrasTotalPrice = product?.extras?.length ? product.extras.reduce((sum, e) => {
+      const extrasTotalPrice = item?.extras?.length ? item.extras.reduce((sum, e) => {
         const extra = extraMap[e.extraId];
         return sum + (Number(extra?.price) || 0);
       }, 0) : 0;
       
       // Calcular subtotal del producto
-      const productSubtotal = (Number(product.price) + extrasTotalPrice) * quantity;
+      const productSubtotal = (Number(product.price) + extrasTotalPrice) * Number(quantity);
       orderTotalCost += productSubtotal;
 
       // Guardar producto en detalle
@@ -57,8 +61,8 @@ const createPedido = async (req, res) => {
         uuid: product.uuid,
         name: product.name,
         price: Number(product.price),
-        quantity: quantity,
-        extras: item?.extras || []
+        quantity: Number(quantity),
+        extras: item?.extras?.map(e=> extraMap[e.extraId]) || []
       });
 
       // Procesar extras de este producto
@@ -77,6 +81,8 @@ const createPedido = async (req, res) => {
         });
       }
     }
+    orderTotalCost += deliveryData ? Number(deliveryData.price) : 0;
+
     if (orderTotal !== orderTotalCost) {
       console.log(`Error al calcular el costo total del pedido:
           Valor recibido del cliente: ${orderTotal}
@@ -101,6 +107,7 @@ const createPedido = async (req, res) => {
       direction: direction || '',
       orderDetails,
       orderTotalCost,
+      deliveryData, // {uuid, locationName, price}
       notes: notes || ''
     };
 

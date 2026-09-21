@@ -41,6 +41,7 @@ CREATE TABLE pedidos (
   orderState ENUM('pendiente', 'hecho') DEFAULT 'pendiente',
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deliveryData JSON NOT NULL,
   notes TEXT NULL -- revisar nombre, agregar a modelo y controller
 );
 

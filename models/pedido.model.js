@@ -31,12 +31,12 @@ const Pedido = {
   },
 
   create: async (data) => {
-    const { clientName, clientPhone, atDate, toDate, time, direction, orderDetails, orderTotalCost, notes } = data;
+    const { clientName, clientPhone, atDate, toDate, time, direction, orderDetails, orderTotalCost, notes, deliveryData } = data;
     const [result] = await db.query(
       `INSERT INTO pedidos 
-       (clientName, clientPhone, atDate, toDate, time, direction, orderDetails, orderTotalCost, notes) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [clientName, clientPhone, atDate, toDate, time, direction, JSON.stringify(orderDetails), orderTotalCost, notes]
+       (clientName, clientPhone, atDate, toDate, time, direction, orderDetails, orderTotalCost, deliveryData, notes) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [clientName, clientPhone, atDate, toDate, time, direction, JSON.stringify(orderDetails), orderTotalCost, JSON.stringify(deliveryData), notes]
     );
     return result;
   },
