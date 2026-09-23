@@ -1,6 +1,6 @@
-# Gaby's Burgers Backend
+# Gaby's Burgers - Backend API
 
-REST API for Gaby's Burgers.
+REST API for Gaby's Burgers, to handle products, extras, orders, delivery service, auth and metrics.
 
 ## Features
 
@@ -22,17 +22,11 @@ REST API for Gaby's Burgers.
 - Cloudinary
 - Sharp
 
-## Architecture
-
-controllers/
-models/
-routes/
-services/
-middlewares/
-utils/
-database/
-
 ## API
+
+### Authentication
+
+POST /auth/login
 
 ### Products
 
@@ -57,6 +51,45 @@ POST /pedidos
 PUT /pedidos/:uuid (change order state)
 DELETE /pedidos/:uuid
 
+### Deliveries
+
+GET /domicilios
+GET /domicilios/:uuid
+POST /domicilios
+PUT /domicilios/:uuid
+DELETE /domicilios/:uuid
+
+## Architecture
+
+src/
+|--- controllers/
+|--- models/
+|--- routes/
+|--- services/
+|--- middlewares/
+|--- utils/
+|--- database/
+
+### Controllers
+
+Receive the request and coordinate the operation.
+
+### Models
+
+Contain the operations related with the database queries.
+
+### Services
+
+Contain business logic that should live outside of the controllers.
+
+### Routes
+
+Define the HTTP endpoints
+
+### Middlewares
+
+Implement crossed responsibilities like authentication, error handling, etc.
+
 ## Environment Variables
 
 See `.env.example`.
@@ -72,3 +105,9 @@ pnpm dev
 ## Production
 
 pnpm start
+
+## Known Limitations
+
+- Automated tests are not yet implemented.
+- Backend validation is being hardened.
+- Typescript migration is planned.
